@@ -17,4 +17,4 @@ main.js - javascript
 # Time Estimation
 2 weeks
 
-#Link github: https://github.com/nhuquyenit99/TodoApp
+# Link github: https://github.com/nhuquyenit99/TodoApp
