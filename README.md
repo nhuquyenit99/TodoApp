@@ -17,4 +17,6 @@ main.js - javascript
 # Time Estimation
 2 weeks
 
-# Link github: https://github.com/nhuquyenit99/TodoApp
+# References:
+Link github: https://github.com/nhuquyenit99/TodoApp
+Hosting URL: https://todo-app-c2db7.web.app/
