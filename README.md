@@ -19,4 +19,5 @@ main.js - javascript
 
 # References:
 Link github: https://github.com/nhuquyenit99/TodoApp
+
 Hosting URL: https://todo-app-c2db7.web.app/
