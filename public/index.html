@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TodoApp</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.14.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.14.0/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.14.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.14.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.14.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+    <section class="todoapp">
+			<header class="header">
+				<h1>todos</h1>
+				<input id="todo-input" class="new-todo" placeholder="What needs to be done?" autofocus="" onkeypress="addAssignment(event,this)">
+			</header>
+			<section class="main" style="display: block;">
+				<input id="toggle-all" class="toggle-all" type="checkbox">
+				<label for="toggle-all">Mark all as complete</label>
+				<ul class="todo-list" id="list-data">
+          
+		    </ul>
+			</section>
+			<footer id="footer-actions" class="footer" style="display: none;">
+			<span id="count-tasks"class="todo-count"><strong>0</strong> items left</span>
+			<ul class="filters">
+				<li>
+					<a class="selected" href="#/all">All</a>
+				</li>
+				<li>
+					<a href="#/active">Active</a>
+				</li>
+				<li>
+					<a href="#/completed">Completed</a>
+				</li>
+			</ul>
+			
+		</footer>
+    </section>
+
+    <footer class="info">
+			<p>Double-click to edit a todo</p>
+    </footer>
+    
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-analytics.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyAniu7aQc6tthCIlTpo8H1qPG474t_iHno",
+        authDomain: "todo-app-c2db7.firebaseapp.com",
+        databaseURL: "https://todo-app-c2db7.firebaseio.com",
+        projectId: "todo-app-c2db7",
+        storageBucket: "todo-app-c2db7.appspot.com",
+        messagingSenderId: "567624587255",
+        appId: "1:567624587255:web:977833200bd678c3f540f2",
+        measurementId: "G-1WNVBSPWC4"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+    <script type="text/javascript" src="./js/main.js" ></script>
+  </body>
+</html>
+</html>
