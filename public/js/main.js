@@ -13,7 +13,7 @@ function convertToHTML(list){
         <div class="view" myId= ${item.id}>
           <input class="toggle" type="checkbox" ${item.done?'checked':''}>
           <label>${item.content}</label>
-          <button class="destroy"></button>
+          <button class="destroy" onclick="deleteTask(${item.id})"></button>
         </div>
         <input class="edit" value="${item.content}">
       </li>`;
@@ -63,6 +63,17 @@ function addTask(e){
     ListString = JSON.stringify(allList);
     localStorage.setItem(storageKey,ListString);
   }
+  render();
+}
+
+function deleteTask(taskId){
+  var index;
+  for(let i=0;i<allList.length;i++){
+    if(allList[i].id === taskId) index = i; 
+  }
+  allList.splice(index,1);
+  listString = JSON.stringify(allList);
+  localStorage.setItem(storageKey,listString);
   render();
 }
 
