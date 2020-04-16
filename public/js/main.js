@@ -32,8 +32,7 @@ function render(){
     footerActions.style.display = "block";
 
     var countTasks = document.getElementById('count-tasks');
-    todoString = localStorage.getItem(storageKeyTodo);
-    todoList = JSON.parse(todoString);
+    todoList = allList.filter(item => item.done===false)
     countTasks.innerHTML = '<strong>'+ todoList.length +'</strong> items left';
   }
 }
@@ -44,8 +43,9 @@ function Task(content){
 }
 
 function addTask(e){
+  const enterKey = 13;
   todoInput = document.getElementById('todo-input');
-  if(e.charCode === 13 && todoInput.value!==''){
+  if(e.charCode === enterKey && todoInput.value.trim()!==''){
     let newTask = new Task(todoInput.value);
     todoList.push(newTask);
     allList.push(newTask);
@@ -54,8 +54,6 @@ function addTask(e){
 
     ListString = JSON.stringify(allList);
     localStorage.setItem(storageKeyAll,ListString);
-    todoString = JSON.stringify(todoList);
-    localStorage.setItem(storageKeyTodo,todoString);
   }
 
   render();
