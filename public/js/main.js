@@ -45,9 +45,9 @@ function render(){
 }
 
 function Task(content){
+  this.id = new Date().valueOf();
   this.content = content;
   this.done = false;
-  this.id = new Date().valueOf();
 }
 
 function addTask(e){
