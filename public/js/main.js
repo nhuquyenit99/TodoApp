@@ -10,14 +10,12 @@ var listString = '';
 var todoString = '';
 var doneString = '';
 
-var total = 0;
 
 function render(){
   var htmlList = document.getElementById('list-data');
   listString = localStorage.getItem(storageKeyAll);
   if (listString){
     allList = JSON.parse(listString);
-    count = allList.length;
     var content = allList.map(function(item){
       return  `<li>
       <div class="view">
@@ -43,7 +41,6 @@ function render(){
 function Task(content){
   this.content = content;
   this.done = false;
-  this.id = ++total;
 }
 
 function addTask(e){
