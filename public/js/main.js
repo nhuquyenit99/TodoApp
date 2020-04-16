@@ -1,45 +1,53 @@
-var storageKeyAll = 'allList';
-var storageKeyTodo = 'todoList';
-var storageKeyDone = 'doneList';
+var storageKey = 'allList';
 
 var todoList = [];
 var allList = [];
 var doneList = [];
 
 var listString = '';
-var todoString = '';
-var doneString = '';
 
-
-function render(){
-  var htmlList = document.getElementById('list-data');
-  listString = localStorage.getItem(storageKeyAll);
-  if (listString){
-    allList = JSON.parse(listString);
-    var content = allList.map(function(item){
-      return  `<li>
-      <div class="view">
-      <input class="toggle" type="checkbox" ${item.done?'checked':''}>
-      <label>${item.content}</label>
-      <button class="destroy"></button>
-      </div>
-      <input class="edit" value="${item.content}">
+function convertToHTML(list){
+  var content = allList.map(function(item){
+    return  `
+      <li>
+        <div class="view" myId= ${item.id}>
+          <input class="toggle" type="checkbox" ${item.done?'checked':''}>
+          <label>${item.content}</label>
+          <button class="destroy"></button>
+        </div>
+        <input class="edit" value="${item.content}">
       </li>`;
-    });
-    htmlList.innerHTML = content.join('');
-
-    var footerActions = document.getElementById('footer-actions');
-    footerActions.style.display = "block";
-
-    var countTasks = document.getElementById('count-tasks');
+  });
+  return content;
+}
+function showFooter(){
+  var element = document.getElementById('footer-actions');
+  if (allList.length!==0){
+    element.style.display = 'block';
+    showCountTasks();   
+  } 
+  else element.style.display = 'none';
+}
+function showCountTasks(){
+  var countTasks = document.getElementById('count-tasks');
     todoList = allList.filter(item => item.done===false)
     countTasks.innerHTML = '<strong>'+ todoList.length +'</strong> items left';
+}
+function render(){
+  var htmlList = document.getElementById('list-data');
+  listString = localStorage.getItem(storageKey);
+  if (listString){
+    allList = JSON.parse(listString);
+    var content = convertToHTML(allList);
+    htmlList.innerHTML = content.join('');
   }
+  showFooter();
 }
 
 function Task(content){
   this.content = content;
   this.done = false;
+  this.id = new Date().valueOf();
 }
 
 function addTask(e){
@@ -53,9 +61,9 @@ function addTask(e){
     todoInput.value ='';
 
     ListString = JSON.stringify(allList);
-    localStorage.setItem(storageKeyAll,ListString);
+    localStorage.setItem(storageKey,ListString);
   }
-
   render();
 }
+
 render();
