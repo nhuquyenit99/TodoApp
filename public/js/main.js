@@ -50,12 +50,12 @@ function Task(content){
   this.done = false;
 }
 
-function addTask(e){
+var todoInput = document.getElementById('todo-input');
+todoInput.onkeypress = function (e){
   const enterKey = 13;
   todoInput = document.getElementById('todo-input');
   if(e.charCode === enterKey && todoInput.value.trim()!==''){
     let newTask = new Task(todoInput.value);
-    todoList.push(newTask);
     allList.push(newTask);
 
     todoInput.value ='';
