@@ -10,10 +10,10 @@ function convertToHTML(list){
   var content = allList.map(function(item){
     return  `
       <li>
-        <div class="view" myId= ${item.id}>
+        <div class="view" id= ${item.id}>
           <input class="toggle" type="checkbox" ${item.done?'checked':''}>
           <label>${item.content}</label>
-          <button class="destroy" onclick="deleteTask(${item.id})"></button>
+          <button class="destroy"></button>
         </div>
         <input class="edit" value="${item.content}">
       </li>`;
@@ -49,8 +49,8 @@ function Task(content){
   this.content = content;
   this.done = false;
 }
-
-var todoInput = document.getElementById('todo-input');
+// add new task
+var todoInput = document.getElementById('todo-input')
 todoInput.onkeypress = function (e){
   const enterKey = 13;
   todoInput = document.getElementById('todo-input');
@@ -77,4 +77,11 @@ function deleteTask(taskId){
   render();
 }
 
+var todoList = document.getElementById("list-data");
+todoList.addEventListener("click",event=>{
+  var element = event.target;
+  if (element.getAttribute("class")== "destroy"){
+    deleteTask(element.parentNode.id);
+  }
+});
 render();
