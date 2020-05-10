@@ -9,8 +9,8 @@ var listString = '';
 function convertToHTML(list){
   var content = allList.map(function(item){
     return  `
-      <li>
-        <div class="view" id= ${item.id}>
+      <li id= ${item.id} class=${item.done?'completed':''}>
+        <div class="view">
           <input class="toggle" type="checkbox" ${item.done?'checked':''}>
           <label>${item.content}</label>
           <button class="destroy"></button>
@@ -44,18 +44,24 @@ function render(){
   showFooter();
 }
 
-function Task(content){
-  this.id = new Date().valueOf();
-  this.content = content;
-  this.done = false;
-}
+// function Task(content){
+//   this.id = new Date().valueOf();
+//   this.content = content;
+//   this.done = false;
+// }
+// function Task(id,content,done){
+
+// }
 // add new task
 var todoInput = document.getElementById('todo-input')
 todoInput.onkeypress = function (e){
   const enterKey = 13;
   todoInput = document.getElementById('todo-input');
   if(e.charCode === enterKey && todoInput.value.trim()!==''){
-    let newTask = new Task(todoInput.value);
+    let newTask = {};
+    newTask.id = new Date().valueOf();
+    newTask.content = todoInput.value;
+    newTask.done = false;
     allList.push(newTask);
 
     todoInput.value ='';
@@ -69,7 +75,9 @@ todoInput.onkeypress = function (e){
 function deleteTask(taskId){
   var index;
   for(let i=0;i<allList.length;i++){
-    if(allList[i].id === taskId) index = i; 
+    if(allList[i].id === taskId) {
+      index = i;
+    } 
   }
   allList.splice(index,1);
   listString = JSON.stringify(allList);
@@ -77,11 +85,30 @@ function deleteTask(taskId){
   render();
 }
 
+function completeTask(taskId){
+  allList.map(item=>{
+    if(item.id == taskId){
+      item.done = !item.done;
+      return item;
+    }
+    return item;
+  })
+  listString = JSON.stringify(allList);
+  localStorage.setItem(storageKey,listString);
+
+  render();
+}
+
 var todoList = document.getElementById("list-data");
 todoList.addEventListener("click",event=>{
   var element = event.target;
-  if (element.getAttribute("class")== "destroy"){
-    deleteTask(element.parentNode.id);
+  var value = element.getAttribute("class");
+  if (value == "destroy"){
+    deleteTask(element.parentNode.parentNode.id);
+  }
+  if (value == "toggle"){
+    completeTask(element.parentNode.parentNode.id);
+    console.log(element.parentNode.parentNode.classList);
   }
 });
 render();
