@@ -44,14 +44,6 @@ function render(){
   showFooter();
 }
 
-// function Task(content){
-//   this.id = new Date().valueOf();
-//   this.content = content;
-//   this.done = false;
-// }
-// function Task(id,content,done){
-
-// }
 // add new task
 var todoInput = document.getElementById('todo-input')
 todoInput.onkeypress = function (e){
@@ -103,12 +95,13 @@ var todoList = document.getElementById("list-data");
 todoList.addEventListener("click",event=>{
   var element = event.target;
   var value = element.getAttribute("class");
-  if (value == "destroy"){
-    deleteTask(element.parentNode.parentNode.id);
-  }
-  if (value == "toggle"){
-    completeTask(element.parentNode.parentNode.id);
-    console.log(element.parentNode.parentNode.classList);
+  switch (value){
+    case "destroy":
+      deleteTask(element.parentNode.parentNode.id);
+      break;
+    case "toggle": 
+      completeTask(element.parentNode.parentNode.id);
+      break;
   }
 });
 render();
