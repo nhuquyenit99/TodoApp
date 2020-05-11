@@ -84,4 +84,29 @@ todoList.addEventListener("click",event=>{
     deleteTask(element.parentNode.id);
   }
 });
+
+var btnToggleAll = document.getElementById("toggle-all");
+btnToggleAll.addEventListener("click",()=>{
+  let count = allList.reduce((count,item)=>{
+    if(item.done === true) count++;
+    return count;
+  },0);
+  if (count===allList.length){
+    allList.map(item=>{
+      item.done= false;
+      return item;
+    })
+  }
+  else{
+    allList.map(item=>{
+      item.done= true;
+      return item;
+    })
+  } 
+  listString = JSON.stringify(allList);
+  localStorage.setItem(storageKey,listString);
+
+  render();
+});
+
 render();
