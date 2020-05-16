@@ -1,10 +1,16 @@
 var storageKey = "all-list";
-
 var todoList = [];
-
 var listString = "";
 
-function saveData(){
+var footerActions = document.getElementById("footer-actions");
+var countTasks = document.getElementById("count-tasks");
+var listData = document.getElementById("list-data");
+var todoInput = document.getElementById("todo-input");
+var btnToggleAll = document.getElementById("toggle-all");
+
+var btnClearCompleted = document.getElementsByClassName("clear-completed");
+
+function saveData(todoList){
   listString = JSON.stringify(todoList);
   localStorage.setItem(storageKey, listString);
 }
@@ -25,18 +31,20 @@ function convertToHTML(list) {
   });
   return content;
 }
+
 function showFooter() {
-  var element = document.getElementById("footer-actions");
   if (todoList.length !== 0) {
-    element.style.display = "block";
+    footerActions.style.display = "block";
     showCountTasks();
-  } else element.style.display = "none";
+    modifyBtnClearCompleted();
+  } else footerActions.style.display = "none";
+}
+
+function modifyBtnClearCompleted() {
   let check = false;
   for(let i = 0; i < todoList.length; i ++) {
     if (todoList[i].done === true) check = true;
   }
-  var footerActions = document.getElementById("footer-actions");
-  var btnClearCompleted = document.getElementsByClassName("clear-completed");
   if (check) {
     if(btnClearCompleted.length === 0){
       let button = document.createElement("button");
@@ -45,33 +53,40 @@ function showFooter() {
       button.className = "clear-completed";
       button.appendChild(text);
       footerActions.appendChild(button);
+
+      button.addEventListener("click", () => {
+        let list = todoList.filter(item => {
+          return item.done === false;
+        })
+        saveData(list);
+        render();
+        footerActions.removeChild(button);
+      });
     }
   }
   else {
     footerActions.removeChild(btnClearCompleted[0]);
   }
 }
+
 function showCountTasks() {
-  var countTasks = document.getElementById("count-tasks");
   var todoTasks = todoList.filter((item) => item.done === false);
   countTasks.innerHTML = "<strong>" + todoTasks.length + "</strong> items left";
 }
+
 function render() {
-  var htmlList = document.getElementById("list-data");
   listString = localStorage.getItem(storageKey);
   if (listString) {
     todoList = JSON.parse(listString);
     var content = convertToHTML(todoList);
-    htmlList.innerHTML = content.join("");
+    listData.innerHTML = content.join("");
   }
   showFooter();
 }
 
 // add new task
-var todoInput = document.getElementById("todo-input");
 todoInput.onkeypress = function (e) {
   const enterKey = 13;
-  todoInput = document.getElementById("todo-input");
   if (e.charCode === enterKey && todoInput.value.trim() !== "") {
     let newTask = {};
     newTask.id = new Date().valueOf();
@@ -81,7 +96,7 @@ todoInput.onkeypress = function (e) {
 
     todoInput.value = "";
 
-    saveData();
+    saveData(todoList);
   }
   render();
 };
@@ -94,7 +109,7 @@ function deleteTask(taskId) {
     }
   }
   todoList.splice(index, 1);
-  saveData();
+  saveData(todoList);
   render();
 }
 
@@ -107,11 +122,10 @@ function completeTask(taskId) {
     return item;
   });
 
-  saveData();
+  saveData(todoList);
   render();
 }
 
-var listData = document.getElementById("list-data");
 listData.addEventListener("click", (event) => {
   var element = event.target;
   var value = element.getAttribute("class");
@@ -125,7 +139,6 @@ listData.addEventListener("click", (event) => {
   }
 });
 
-var btnToggleAll = document.getElementById("toggle-all");
 btnToggleAll.addEventListener("click", () => {
   let count = todoList.reduce((count, item) => {
     if (item.done === true) count++;
@@ -142,8 +155,9 @@ btnToggleAll.addEventListener("click", () => {
       return item;
     });
   }
-  saveData();
+  saveData(todoList);
   render();
 });
 
 render();
+
