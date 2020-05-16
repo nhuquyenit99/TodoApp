@@ -31,6 +31,25 @@ function showFooter() {
     element.style.display = "block";
     showCountTasks();
   } else element.style.display = "none";
+  let check = false;
+  for(let i = 0; i < todoList.length; i ++) {
+    if (todoList[i].done === true) check = true;
+  }
+  var footerActions = document.getElementById("footer-actions");
+  var btnClearCompleted = document.getElementsByClassName("clear-completed");
+  if (check) {
+    if(btnClearCompleted.length === 0){
+      let button = document.createElement("button");
+      let text = document.createTextNode("Clear completed"); 
+    
+      button.className = "clear-completed";
+      button.appendChild(text);
+      footerActions.appendChild(button);
+    }
+  }
+  else {
+    footerActions.removeChild(btnClearCompleted[0]);
+  }
 }
 function showCountTasks() {
   var countTasks = document.getElementById("count-tasks");
