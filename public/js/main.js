@@ -4,6 +4,11 @@ var todoList = [];
 
 var listString = "";
 
+function saveData(){
+  listString = JSON.stringify(todoList);
+  localStorage.setItem(storageKey, listString);
+}
+
 function convertToHTML(list) {
   var content = todoList.map(function (item) {
     return `
@@ -57,8 +62,7 @@ todoInput.onkeypress = function (e) {
 
     todoInput.value = "";
 
-    listString = JSON.stringify(todoList);
-    localStorage.setItem(storageKey, listString);
+    saveData();
   }
   render();
 };
@@ -71,22 +75,20 @@ function deleteTask(taskId) {
     }
   }
   todoList.splice(index, 1);
-  listString = JSON.stringify(todoList);
-  localStorage.setItem(storageKey, listString);
+  saveData();
   render();
 }
 
 function completeTask(taskId) {
-  todoList.map((item) => {
+  todoList.forEach((item) => {
     if (item.id == taskId) {
       item.done = !item.done;
       return item;
     }
     return item;
   });
-  listString = JSON.stringify(todoList);
-  localStorage.setItem(storageKey, listString);
 
+  saveData();
   render();
 }
 
@@ -105,28 +107,24 @@ listData.addEventListener("click", (event) => {
 });
 
 var btnToggleAll = document.getElementById("toggle-all");
-btnToggleAll.addEventListener("click",()=>{
-  let count = allList.reduce((count,item)=>{
-    if(item.done === true) count++;
+btnToggleAll.addEventListener("click", () => {
+  let count = todoList.reduce((count, item) => {
+    if (item.done === true) count++;
     return count;
-  },0);
-  if (count===allList.length){
-    allList.map(item=>{
-      item.done= false;
+  }, 0);
+  if (count === todoList.length) {
+    todoList.forEach((item) => {
+      item.done = false;
       return item;
-    })
+    });
+  } else {
+    todoList.forEach((item) => {
+      item.done = true;
+      return item;
+    });
   }
-  else{
-    allList.map(item=>{
-      item.done= true;
-      return item;
-    })
-  } 
-  listString = JSON.stringify(allList);
-  localStorage.setItem(storageKey,listString);
-
+  saveData();
   render();
 });
 
 render();
-
