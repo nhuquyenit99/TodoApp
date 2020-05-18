@@ -56,11 +56,11 @@ function modifyBtnClearCompleted() {
       footerActions.appendChild(button);
 
       button.addEventListener("click", () => {
-        let list = todoList.filter(item => {
+        todoList = todoList.filter(item => {
           return item.done === false;
         })
-        saveData(list);
-        render();
+        saveData(todoList);
+        renderData();
         footerActions.removeChild(button);
       });
     }
@@ -111,7 +111,7 @@ function deleteTask(taskId) {
   }
   todoList.splice(index, 1);
   saveData(todoList);
-  render();
+  renderData();
 }
 
 function completeTask(taskId) {
@@ -124,7 +124,7 @@ function completeTask(taskId) {
   });
 
   saveData(todoList);
-  render();
+  renderData();
 }
 
 listData.addEventListener("click", (event) => {
@@ -157,7 +157,35 @@ btnToggleAll.addEventListener("click", () => {
     });
   }
   saveData(todoList);
-  render();
+  renderData();
+});
+
+function renderData() {
+  let selectedFilter = document.getElementsByClassName('selected')[0];
+  let redirect = selectedFilter.getAttribute("href");
+  let list = [];
+  switch (redirect){
+    case "#/all":
+      list = todoList;
+      break;
+    case "#/active":
+      list = todoList.filter(item => item.done === false);
+      break;
+    case "#/completed":
+      list = todoList.filter(item => item.done === true);
+      break;
+  }
+  let content = convertToHTML(list);
+  listData.innerHTML = content.join("");
+  showFooter();
+}
+
+filters.addEventListener("click",(event) => {
+  let element = event.target;
+  let filterSelected = document.getElementsByClassName("selected")[0];
+  filterSelected.removeAttribute("class");
+  element.className = "selected";
+  renderData();
 });
 
 render();
