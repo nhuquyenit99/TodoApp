@@ -37,7 +37,37 @@ function showFooter() {
   if (todoList.length !== 0) {
     footerActions.style.display = "block";
     showCountTasks();
+    modifyBtnClearCompleted();
   } else footerActions.style.display = "none";
+}
+
+function modifyBtnClearCompleted() {
+  let check = false;
+  for(let i = 0; i < todoList.length; i ++) {
+    if (todoList[i].done === true) check = true;
+  }
+  if (check) {
+    if(btnClearCompleted.length === 0){
+      let button = document.createElement("button");
+      let text = document.createTextNode("Clear completed"); 
+    
+      button.className = "clear-completed";
+      button.appendChild(text);
+      footerActions.appendChild(button);
+
+      button.addEventListener("click", () => {
+        let list = todoList.filter(item => {
+          return item.done === false;
+        })
+        saveData(list);
+        render();
+        footerActions.removeChild(button);
+      });
+    }
+  }
+  else {
+    footerActions.removeChild(btnClearCompleted[0]);
+  }
 }
 
 function showCountTasks() {
@@ -81,7 +111,7 @@ function deleteTask(taskId) {
   }
   todoList.splice(index, 1);
   saveData(todoList);
-  renderData();
+  render();
 }
 
 function completeTask(taskId) {
@@ -94,7 +124,7 @@ function completeTask(taskId) {
   });
 
   saveData(todoList);
-  renderData();
+  render();
 }
 
 listData.addEventListener("click", (event) => {
@@ -127,35 +157,9 @@ btnToggleAll.addEventListener("click", () => {
     });
   }
   saveData(todoList);
-  renderData();
-});
-
-function renderData() {
-  let selectedFilter = document.getElementsByClassName('selected')[0];
-  let redirect = selectedFilter.getAttribute("href");
-  let list = [];
-  switch (redirect){
-    case "#/all":
-      list = todoList;
-      break;
-    case "#/active":
-      list = todoList.filter(item => item.done === false);
-      break;
-    case "#/completed":
-      list = todoList.filter(item => item.done === true);
-      break;
-  }
-  let content = convertToHTML(list);
-  listData.innerHTML = content.join("");
-  showFooter();
-}
-
-filters.addEventListener("click",(event) => {
-  let element = event.target;
-  let filterSelected = document.getElementsByClassName("selected")[0];
-  filterSelected.removeAttribute("class");
-  element.className = "selected";
-  renderData();
+  render();
 });
 
 render();
+
+
