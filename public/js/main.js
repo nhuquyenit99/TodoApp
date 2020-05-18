@@ -79,7 +79,7 @@ function render() {
   listString = localStorage.getItem(storageKey);
   if (listString) {
     todoList = JSON.parse(listString);
-    let content = convertToHTML(todoList);
+    const content = convertToHTML(todoList);
     listData.innerHTML = content.join("");
   }
   showFooter();
@@ -128,8 +128,8 @@ function completeTask(taskId) {
 }
 
 listData.addEventListener("click", (event) => {
-  let element = event.target;
-  let value = element.getAttribute("class");
+  const element = event.target;
+  const value = element.getAttribute("class");
   switch (value) {
     case "destroy":
       deleteTask(element.parentNode.parentNode.id);
@@ -161,7 +161,7 @@ btnToggleAll.addEventListener("click", () => {
 });
 
 function renderData() {
-  let selectedFilter = document.getElementsByClassName('selected')[0];
+  const selectedFilter = document.getElementsByClassName('selected')[0];
   let redirect = selectedFilter.getAttribute("href");
   let list = [];
   switch (redirect){
