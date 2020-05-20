@@ -103,7 +103,7 @@ todoInput.onkeypress = function (e) {
 };
 
 function deleteTask(taskId) {
-  var index;
+  let index;
   for (let i = 0; i < todoList.length; i++) {
     if (todoList[i].id == taskId) {
       index = i;
@@ -182,7 +182,7 @@ function renderData() {
 
 filters.addEventListener("click",(event) => {
   const element = event.target;
-  let filterSelected = document.getElementsByClassName("selected")[0];
+  const filterSelected = document.getElementsByClassName("selected")[0];
   filterSelected.removeAttribute("class");
   element.className = "selected";
   renderData();
