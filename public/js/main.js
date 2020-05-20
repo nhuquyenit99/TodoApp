@@ -129,8 +129,8 @@ function completeTask(taskId) {
 
 listData.addEventListener("click", (event) => {
   const element = event.target;
-  const value = element.getAttribute("class");
-  switch (value) {
+  const elementClass = element.getAttribute("class");
+  switch (elementClass) {
     case "destroy":
       deleteTask(element.parentNode.parentNode.id);
       break;
@@ -162,26 +162,26 @@ btnToggleAll.addEventListener("click", () => {
 
 function renderData() {
   const selectedFilter = document.getElementsByClassName('selected')[0];
-  let redirect = selectedFilter.getAttribute("href");
-  let list = [];
+  const redirect = selectedFilter.getAttribute("href");
+  let todoListComputed = [];
   switch (redirect){
     case "#/all":
-      list = todoList;
+      todoListComputed = todoList;
       break;
     case "#/active":
-      list = todoList.filter(item => item.done === false);
+      todoListComputed = todoList.filter(item => item.done === false);
       break;
     case "#/completed":
-      list = todoList.filter(item => item.done === true);
+      todoListComputed = todoList.filter(item => item.done === true);
       break;
   }
-  let content = convertToHTML(list);
+  const content = convertToHTML(todoListComputed);
   listData.innerHTML = content.join("");
   showFooter();
 }
 
 filters.addEventListener("click",(event) => {
-  let element = event.target;
+  const element = event.target;
   let filterSelected = document.getElementsByClassName("selected")[0];
   filterSelected.removeAttribute("class");
   element.className = "selected";
