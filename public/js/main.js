@@ -86,7 +86,7 @@ function render() {
 }
 
 // add new task
-todoInput.onkeypress = function (e) {
+todoInput.onkeypress = (e) => {
   const enterKey = 13;
   if (e.charCode === enterKey && todoInput.value.trim() !== "") {
     let newTask = {};
@@ -159,6 +159,31 @@ btnToggleAll.addEventListener("click", () => {
   saveData(todoList);
   render();
 });
+
+listData.addEventListener("dblclick",(event) => {
+  let element = event.target;
+  let item = element.parentNode.parentNode;
+  item.classList.add("editing");
+  let inputEdit = item.lastElementChild;
+  console.log(inputEdit);
+  inputEdit.onkeypress = (e) => {
+    const enterKey = 13;
+    if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
+      let taskId = item.getAttribute("id");
+      todoList.map(item => {
+        if (item.id == taskId) {
+          item.content = inputEdit.value;
+        }
+        return item;
+      });
+      
+      saveData(todoList);
+      item.classList.remove("editing");
+      render();
+    }
+  }
+})
+
 
 render();
 
