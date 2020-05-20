@@ -17,7 +17,7 @@ function saveData(todoList){
 }
 
 function convertToHTML(list) {
-  var content = list.map(function (item) {
+  let content = list.map(function (item) {
     return `
       <li id = ${item.id} class = ${item.done ? "completed" : ""}>
         <div class = "todo-wrapper">
@@ -60,7 +60,7 @@ function modifyBtnClearCompleted() {
           return item.done === false;
         })
         saveData(todoList);
-        renderData();
+        todoListComputed();
         footerActions.removeChild(button);
       });
     }
@@ -71,7 +71,7 @@ function modifyBtnClearCompleted() {
 }
 
 function showCountTasks() {
-  var todoTasks = todoList.filter((item) => item.done === false);
+  let todoTasks = todoList.filter((item) => item.done === false);
   countTasks.innerHTML = "<strong>" + todoTasks.length + "</strong> items left";
 }
 
@@ -99,7 +99,7 @@ todoInput.onkeypress = (e) => {
 
     saveData(todoList);
   }
-  renderData();
+  todoListComputed();
 };
 
 function deleteTask(taskId) {
@@ -111,7 +111,7 @@ function deleteTask(taskId) {
   }
   todoList.splice(index, 1);
   saveData(todoList);
-  renderData();
+  todoListComputed();
 }
 
 function completeTask(taskId) {
@@ -124,7 +124,7 @@ function completeTask(taskId) {
   });
 
   saveData(todoList);
-  renderData();
+  todoListComputed();
 }
 
 listData.addEventListener("click", (event) => {
@@ -157,25 +157,25 @@ btnToggleAll.addEventListener("click", () => {
     });
   }
   saveData(todoList);
-  renderData();
+  todoListComputed();
 });
 
-function renderData() {
+function todoListComputed() {
   const selectedFilter = document.getElementsByClassName('selected')[0];
   const redirect = selectedFilter.getAttribute("href");
-  let todoListComputed = [];
+  let list = [];
   switch (redirect){
     case "#/all":
-      todoListComputed = todoList;
+      list = todoList;
       break;
     case "#/active":
-      todoListComputed = todoList.filter(item => item.done === false);
+      list = todoList.filter(item => item.done === false);
       break;
     case "#/completed":
-      todoListComputed = todoList.filter(item => item.done === true);
+      list = todoList.filter(item => item.done === true);
       break;
   }
-  const content = convertToHTML(todoListComputed);
+  const content = convertToHTML(list);
   listData.innerHTML = content.join("");
   showFooter();
 }
@@ -185,19 +185,19 @@ filters.addEventListener("click",(event) => {
   const filterSelected = document.getElementsByClassName("selected")[0];
   filterSelected.removeAttribute("class");
   element.className = "selected";
-  renderData();
+  todoListComputed();
 });
 
 listData.addEventListener("dblclick",(event) => {
-  let element = event.target;
-  let item = element.parentNode.parentNode;
+  const element = event.target;
+  const item = element.parentNode.parentNode;
   item.classList.add("editing");
-  let inputEdit = item.lastElementChild;
-  console.log(inputEdit);
+  const inputEdit = item.lastElementChild;
+
   inputEdit.onkeypress = (e) => {
     const enterKey = 13;
     if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
-      let taskId = item.getAttribute("id");
+      const taskId = item.getAttribute("id");
       todoList.map(item => {
         if (item.id == taskId) {
           item.content = inputEdit.value;
@@ -207,7 +207,7 @@ listData.addEventListener("dblclick",(event) => {
       
       saveData(todoList);
       item.classList.remove("editing");
-      render();
+      todoListComputed();
     }
   }
 })
