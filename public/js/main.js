@@ -1,4 +1,4 @@
-var storageKey = "all-list";
+const storageKey = "all-list";
 var todoList = [];
 var listString = "";
 
@@ -11,13 +11,15 @@ var btnToggleAll = document.getElementById("toggle-all");
 var filters = document.getElementsByClassName("filters")[0];
 var btnClearCompleted = document.getElementsByClassName("clear-completed");
 
+const enterKey = 13;
+
 function saveData(todoList){
   listString = JSON.stringify(todoList);
   localStorage.setItem(storageKey, listString);
 }
 
 function convertToHTML(list) {
-  let content = list.map(function (item) {
+  const content = list.map(function (item) {
     return `
       <li id = ${item.id} class = ${item.done ? "completed" : ""}>
         <div class = "todo-wrapper">
@@ -60,7 +62,7 @@ function modifyBtnClearCompleted() {
           return item.done === false;
         })
         saveData(todoList);
-        todoListComputed();
+        renderFilteredData();
         footerActions.removeChild(button);
       });
     }
@@ -71,7 +73,7 @@ function modifyBtnClearCompleted() {
 }
 
 function showCountTasks() {
-  let todoTasks = todoList.filter((item) => item.done === false);
+  const todoTasks = todoList.filter((item) => item.done === false);
   countTasks.innerHTML = "<strong>" + todoTasks.length + "</strong> items left";
 }
 
@@ -87,7 +89,6 @@ function render() {
 
 // add new task
 todoInput.onkeypress = (e) => {
-  const enterKey = 13;
   if (e.charCode === enterKey && todoInput.value.trim() !== "") {
     let newTask = {};
     newTask.id = new Date().valueOf();
@@ -99,7 +100,7 @@ todoInput.onkeypress = (e) => {
 
     saveData(todoList);
   }
-  todoListComputed();
+  renderFilteredData();
 };
 
 function deleteTask(taskId) {
@@ -111,7 +112,7 @@ function deleteTask(taskId) {
   }
   todoList.splice(index, 1);
   saveData(todoList);
-  todoListComputed();
+  renderFilteredData();
 }
 
 function completeTask(taskId) {
@@ -124,7 +125,7 @@ function completeTask(taskId) {
   });
 
   saveData(todoList);
-  todoListComputed();
+  renderFilteredData();
 }
 
 listData.addEventListener("click", (event) => {
@@ -141,11 +142,11 @@ listData.addEventListener("click", (event) => {
 });
 
 btnToggleAll.addEventListener("click", () => {
-  let count = todoList.reduce((count, item) => {
+  let countCompletedTasks = todoList.reduce((count, item) => {
     if (item.done === true) count++;
     return count;
   }, 0);
-  if (count === todoList.length) {
+  if (countCompletedTasks === todoList.length) {
     todoList.forEach((item) => {
       item.done = false;
       return item;
@@ -157,10 +158,10 @@ btnToggleAll.addEventListener("click", () => {
     });
   }
   saveData(todoList);
-  todoListComputed();
+  renderFilteredData();
 });
 
-function todoListComputed() {
+function renderFilteredData() {
   const selectedFilter = document.getElementsByClassName('selected')[0];
   const redirect = selectedFilter.getAttribute("href");
   let list = [];
@@ -185,20 +186,19 @@ filters.addEventListener("click",(event) => {
   const filterSelected = document.getElementsByClassName("selected")[0];
   filterSelected.removeAttribute("class");
   element.className = "selected";
-  todoListComputed();
+  renderFilteredData();
 });
 
 listData.addEventListener("dblclick",(event) => {
   const element = event.target;
-  const item = element.parentNode.parentNode;
-  item.classList.add("editing");
-  const inputEdit = item.lastElementChild;
+  const taskElement = element.parentNode.parentNode;
+  taskElement.classList.add("editing");
+  const inputEdit = taskElement.lastElementChild;
 
   inputEdit.onkeypress = (e) => {
-    const enterKey = 13;
     if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
-      const taskId = item.getAttribute("id");
-      todoList.map(item => {
+      const taskId = taskElement.getAttribute("id");
+      todoList.forEach(item => {
         if (item.id == taskId) {
           item.content = inputEdit.value;
         }
@@ -207,7 +207,7 @@ listData.addEventListener("dblclick",(event) => {
       
       saveData(todoList);
       item.classList.remove("editing");
-      todoListComputed();
+      renderFilteredData();
     }
   }
 })
