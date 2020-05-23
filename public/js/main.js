@@ -13,7 +13,7 @@ var btnClearCompleted = document.getElementsByClassName("clear-completed");
 
 const enterKey = 13;
 
-function saveData(todoList){
+function saveData(todoList) {
   listString = JSON.stringify(todoList);
   localStorage.setItem(storageKey, listString);
 }
@@ -21,15 +21,14 @@ function saveData(todoList){
 function convertToHTML(list) {
   const content = list.map(function (item) {
     return `
-      <li id = ${item.id} class = ${item.done ? "completed" : ""}>
-        <div class = "todo-wrapper">
-          <input class = "toggle" type = "checkbox" ${
-            item.done ? "checked" : ""
-          }>
+      <li id=${item.id} class=${item.done ? "completed" : ""}>
+        <div class="todo-wrapper">
+          <input class="toggle" type="checkbox" ${item.done ? "checked" : ""}>
           <label>${item.content}</label>
-          <button class = "destroy"></button>
+          <button class="destroy"></button>
         </div>
-        <input class = "edit" value = "${item.content}">
+        <
+        input class="edit" value="${item.content}">
       </li>`;
   });
   return content;
@@ -45,31 +44,31 @@ function showFooter() {
 
 function modifyBtnClearCompleted() {
   let check = false;
-  for(let i = 0; i < todoList.length; i ++) {
+  for (let i = 0; i < todoList.length; i++) {
     if (todoList[i].done === true) check = true;
   }
   if (check) {
-    if(btnClearCompleted.length === 0){
+    if (btnClearCompleted.length === 0) {
       let button = document.createElement("button");
-      let text = document.createTextNode("Clear completed"); 
-    
+      let text = document.createTextNode("Clear completed");
+
       button.className = "clear-completed";
       button.appendChild(text);
       footerActions.appendChild(button);
 
       button.addEventListener("click", () => {
-        todoList = todoList.filter(item => {
+        todoList = todoList.filter((item) => {
           return item.done === false;
-        })
+        });
         saveData(todoList);
         renderFilteredData();
         footerActions.removeChild(button);
       });
     }
-  }
-  else {
-    footerActions.removeChild(btnClearCompleted[0]);
-  }
+    else {
+      footerActions.removeChild(btnClearCompleted[0]);
+    }
+  } 
 }
 
 function showCountTasks() {
@@ -142,11 +141,11 @@ listData.addEventListener("click", (event) => {
 });
 
 btnToggleAll.addEventListener("click", () => {
-  let countCompletedTasks = todoList.reduce((count, item) => {
+  let completedTasksCounter = todoList.reduce((count, item) => {
     if (item.done === true) count++;
     return count;
   }, 0);
-  if (countCompletedTasks === todoList.length) {
+  if (completedTasksCounter === todoList.length) {
     todoList.forEach((item) => {
       item.done = false;
       return item;
@@ -162,18 +161,18 @@ btnToggleAll.addEventListener("click", () => {
 });
 
 function renderFilteredData() {
-  const selectedFilter = document.getElementsByClassName('selected')[0];
+  const selectedFilter = document.getElementsByClassName("selected")[0];
   const redirect = selectedFilter.getAttribute("href");
   let list = [];
-  switch (redirect){
+  switch (redirect) {
     case "#/all":
       list = todoList;
       break;
     case "#/active":
-      list = todoList.filter(item => item.done === false);
+      list = todoList.filter((item) => item.done === false);
       break;
     case "#/completed":
-      list = todoList.filter(item => item.done === true);
+      list = todoList.filter((item) => item.done === true);
       break;
   }
   const content = convertToHTML(list);
@@ -181,7 +180,7 @@ function renderFilteredData() {
   showFooter();
 }
 
-filters.addEventListener("click",(event) => {
+filters.addEventListener("click", (event) => {
   const element = event.target;
   const filterSelected = document.getElementsByClassName("selected")[0];
   filterSelected.removeAttribute("class");
@@ -189,7 +188,7 @@ filters.addEventListener("click",(event) => {
   renderFilteredData();
 });
 
-listData.addEventListener("dblclick",(event) => {
+listData.addEventListener("dblclick", (event) => {
   const element = event.target;
   const taskElement = element.parentNode.parentNode;
   taskElement.classList.add("editing");
@@ -198,21 +197,18 @@ listData.addEventListener("dblclick",(event) => {
   inputEdit.onkeypress = (e) => {
     if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
       const taskId = taskElement.getAttribute("id");
-      todoList.forEach(item => {
+      todoList.forEach((item) => {
         if (item.id == taskId) {
           item.content = inputEdit.value;
         }
         return item;
       });
-      
+
       saveData(todoList);
-      item.classList.remove("editing");
+      taskElement.classList.remove("editing");
       renderFilteredData();
     }
-  }
-})
-
+  };
+});
 
 render();
-
-

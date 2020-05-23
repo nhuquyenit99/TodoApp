@@ -159,7 +159,6 @@ body {
 
 .todo-list li.editing {
   border-bottom: none;
-  padding: 0;
 }
 
 .todo-list li.editing .edit {
