@@ -1,4 +1,4 @@
-var storageKey = "all-list";
+const storageKey = "all-list";
 var todoList = [];
 var listString = "";
 
@@ -11,23 +11,23 @@ var btnToggleAll = document.getElementById("toggle-all");
 var filters = document.getElementsByClassName("filters")[0];
 var btnClearCompleted = document.getElementsByClassName("clear-completed");
 
-function saveData(todoList){
+const enterKey = 13;
+
+function saveData(todoList) {
   listString = JSON.stringify(todoList);
   localStorage.setItem(storageKey, listString);
 }
 
 function convertToHTML(list) {
-  var content = list.map(function (item) {
+  const content = list.map(function (item) {
     return `
-      <li id = ${item.id} class = ${item.done ? "completed" : ""}>
-        <div class = "todo-wrapper">
-          <input class = "toggle" type = "checkbox" ${
-            item.done ? "checked" : ""
-          }>
+      <li id=${item.id} class=${item.done ? "completed" : ""}>
+        <div class="todo-wrapper">
+          <input class="toggle" type="checkbox" ${item.done ? "checked" : ""}>
           <label>${item.content}</label>
-          <button class = "destroy"></button>
+          <button class="destroy"></button>
         </div>
-        <input class = "edit" value = "${item.content}">
+        <input class="edit" value="${item.content}">
       </li>`;
   });
   return content;
@@ -43,35 +43,34 @@ function showFooter() {
 
 function modifyBtnClearCompleted() {
   let check = false;
-  for(let i = 0; i < todoList.length; i ++) {
+  for (let i = 0; i < todoList.length; i++) {
     if (todoList[i].done === true) check = true;
   }
   if (check) {
-    if(btnClearCompleted.length === 0){
+    if (btnClearCompleted.length === 0) {
       let button = document.createElement("button");
-      let text = document.createTextNode("Clear completed"); 
-    
+      let text = document.createTextNode("Clear completed");
+
       button.className = "clear-completed";
       button.appendChild(text);
       footerActions.appendChild(button);
 
       button.addEventListener("click", () => {
-        todoList = todoList.filter(item => {
+        todoList = todoList.filter((item) => {
           return item.done === false;
-        })
+        });
         saveData(todoList);
-        renderData();
+        renderFilteredData();
         footerActions.removeChild(button);
       });
     }
-  }
-  else {
+  } else {
     footerActions.removeChild(btnClearCompleted[0]);
   }
 }
 
 function showCountTasks() {
-  var todoTasks = todoList.filter((item) => item.done === false);
+  const todoTasks = todoList.filter((item) => item.done === false);
   countTasks.innerHTML = "<strong>" + todoTasks.length + "</strong> items left";
 }
 
@@ -86,8 +85,7 @@ function render() {
 }
 
 // add new task
-todoInput.onkeypress = function (e) {
-  const enterKey = 13;
+todoInput.onkeypress = (e) => {
   if (e.charCode === enterKey && todoInput.value.trim() !== "") {
     let newTask = {};
     newTask.id = new Date().valueOf();
@@ -99,7 +97,7 @@ todoInput.onkeypress = function (e) {
 
     saveData(todoList);
   }
-  renderData();
+  renderFilteredData();
 };
 
 function deleteTask(taskId) {
@@ -111,7 +109,7 @@ function deleteTask(taskId) {
   }
   todoList.splice(index, 1);
   saveData(todoList);
-  renderData();
+  renderFilteredData();
 }
 
 function completeTask(taskId) {
@@ -124,7 +122,7 @@ function completeTask(taskId) {
   });
 
   saveData(todoList);
-  renderData();
+  renderFilteredData();
 }
 
 listData.addEventListener("click", (event) => {
@@ -141,11 +139,11 @@ listData.addEventListener("click", (event) => {
 });
 
 btnToggleAll.addEventListener("click", () => {
-  let count = todoList.reduce((count, item) => {
+  let completedTasksCounter = todoList.reduce((count, item) => {
     if (item.done === true) count++;
     return count;
   }, 0);
-  if (count === todoList.length) {
+  if (completedTasksCounter === todoList.length) {
     todoList.forEach((item) => {
       item.done = false;
       return item;
@@ -157,37 +155,70 @@ btnToggleAll.addEventListener("click", () => {
     });
   }
   saveData(todoList);
-  renderData();
+  renderFilteredData();
 });
 
-function renderData() {
-  const selectedFilter = document.getElementsByClassName('selected')[0];
+function renderFilteredData() {
+  const selectedFilter = document.getElementsByClassName("selected")[0];
   const redirect = selectedFilter.getAttribute("href");
-  let todoListComputed = [];
-  switch (redirect){
+  let list = [];
+  switch (redirect) {
     case "#/all":
-      todoListComputed = todoList;
+      list = todoList;
       break;
     case "#/active":
-      todoListComputed = todoList.filter(item => item.done === false);
+      list = todoList.filter((item) => item.done === false);
       break;
     case "#/completed":
-      todoListComputed = todoList.filter(item => item.done === true);
+      list = todoList.filter((item) => item.done === true);
       break;
   }
-  const content = convertToHTML(todoListComputed);
+  const content = convertToHTML(list);
   listData.innerHTML = content.join("");
   showFooter();
 }
 
-filters.addEventListener("click",(event) => {
+filters.addEventListener("click", (event) => {
   const element = event.target;
-  const filterSelected = document.getElementsByClassName("selected")[0];
-  filterSelected.removeAttribute("class");
-  element.className = "selected";
-  renderData();
+  if (element.tagName === "A") {
+    const filterSelected = document.getElementsByClassName("selected")[0];
+    filterSelected.removeAttribute("class");
+    element.className = "selected";
+    renderFilteredData();
+  }
+});
+
+listData.addEventListener("dblclick", (event) => {
+  const element = event.target;
+  if (element.tagName === "LABEL") {
+    const taskElement = element.parentNode.parentNode;
+    taskElement.classList.add("editing");
+    const inputEdit = taskElement.lastElementChild;
+
+    inputEdit.selectionStart = inputEdit.value.length;
+    inputEdit.selectionEnd = inputEdit.value.length;
+    console.log(inputEdit.value.length);
+    inputEdit.focus();
+    
+    inputEdit.onblur = () => {
+      taskElement.classList.remove("editing");
+    };
+    inputEdit.onkeypress = (e) => {
+      if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
+        const taskId = taskElement.getAttribute("id");
+        todoList.forEach((item) => {
+          if (item.id == taskId) {
+            item.content = inputEdit.value;
+          }
+          return item;
+        });
+
+        saveData(todoList);
+        taskElement.classList.remove("editing");
+        renderFilteredData();
+      }
+    };
+  }
 });
 
 render();
-
-
