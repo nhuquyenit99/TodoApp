@@ -195,6 +195,14 @@ listData.addEventListener("dblclick", (event) => {
     taskElement.classList.add("editing");
     const inputEdit = taskElement.lastElementChild;
 
+    inputEdit.selectionStart = inputEdit.value.length;
+    inputEdit.selectionEnd = inputEdit.value.length;
+    console.log(inputEdit.value.length);
+    inputEdit.focus();
+    
+    inputEdit.onblur = () => {
+      taskElement.classList.remove("editing");
+    };
     inputEdit.onkeypress = (e) => {
       if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
         const taskId = taskElement.getAttribute("id");
