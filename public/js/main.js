@@ -45,7 +45,6 @@ function modifyBtnClearCompleted() {
   let check = false;
   for (let i = 0; i < todoList.length; i++) {
     if (todoList[i].done === true) check = true;
-    console.log(check);
   }
   if (check) {
     if (btnClearCompleted.length === 0) {
@@ -61,11 +60,11 @@ function modifyBtnClearCompleted() {
           return item.done === false;
         });
         saveData(todoList);
+        renderFilteredData();
         footerActions.removeChild(button);
       });
     }
-  } 
-  else {
+  } else {
     footerActions.removeChild(btnClearCompleted[0]);
   }
 }
@@ -181,33 +180,37 @@ function renderFilteredData() {
 
 filters.addEventListener("click", (event) => {
   const element = event.target;
-  const filterSelected = document.getElementsByClassName("selected")[0];
-  filterSelected.removeAttribute("class");
-  element.className = "selected";
-  renderFilteredData();
+  if (element.tagName === "A") {
+    const filterSelected = document.getElementsByClassName("selected")[0];
+    filterSelected.removeAttribute("class");
+    element.className = "selected";
+    renderFilteredData();
+  }
 });
 
 listData.addEventListener("dblclick", (event) => {
   const element = event.target;
-  const taskElement = element.parentNode.parentNode;
-  taskElement.classList.add("editing");
-  const inputEdit = taskElement.lastElementChild;
+  if (element.tagName === "LABEL") {
+    const taskElement = element.parentNode.parentNode;
+    taskElement.classList.add("editing");
+    const inputEdit = taskElement.lastElementChild;
 
-  inputEdit.onkeypress = (e) => {
-    if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
-      const taskId = taskElement.getAttribute("id");
-      todoList.forEach((item) => {
-        if (item.id == taskId) {
-          item.content = inputEdit.value;
-        }
-        return item;
-      });
+    inputEdit.onkeypress = (e) => {
+      if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
+        const taskId = taskElement.getAttribute("id");
+        todoList.forEach((item) => {
+          if (item.id == taskId) {
+            item.content = inputEdit.value;
+          }
+          return item;
+        });
 
-      saveData(todoList);
-      taskElement.classList.remove("editing");
-      renderFilteredData();
-    }
-  };
+        saveData(todoList);
+        taskElement.classList.remove("editing");
+        renderFilteredData();
+      }
+    };
+  }
 });
 
 render();
