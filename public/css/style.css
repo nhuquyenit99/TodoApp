@@ -363,4 +363,7 @@ html .clear-completed:active {
   .filters {
     bottom: 10px;
   }
+  .todo-list li.editing .edit {
+    width: 350px;
+  }
 }
