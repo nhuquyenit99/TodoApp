@@ -27,8 +27,7 @@ function convertToHTML(list) {
           <label>${item.content}</label>
           <button class="destroy"></button>
         </div>
-        <
-        input class="edit" value="${item.content}">
+        <input class="edit" value="${item.content}">
       </li>`;
   });
   return content;
@@ -46,6 +45,7 @@ function modifyBtnClearCompleted() {
   let check = false;
   for (let i = 0; i < todoList.length; i++) {
     if (todoList[i].done === true) check = true;
+    console.log(check);
   }
   if (check) {
     if (btnClearCompleted.length === 0) {
@@ -61,14 +61,13 @@ function modifyBtnClearCompleted() {
           return item.done === false;
         });
         saveData(todoList);
-        renderFilteredData();
         footerActions.removeChild(button);
       });
     }
-    else {
-      footerActions.removeChild(btnClearCompleted[0]);
-    }
   } 
+  else {
+    footerActions.removeChild(btnClearCompleted[0]);
+  }
 }
 
 function showCountTasks() {
