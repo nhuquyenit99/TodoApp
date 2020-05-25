@@ -11,6 +11,7 @@ var btnToggleAll = document.getElementById("toggle-all");
 var filters = document.getElementsByClassName("filters")[0];
 var btnClearCompleted = document.getElementsByClassName("clear-completed");
 
+var labelToggleAll = document.getElementById('label-toggle-all');
 const enterKey = 13;
 
 function saveData(todoList) {
@@ -61,10 +62,14 @@ function modifyBtnClearCompleted() {
         });
         saveData(todoList);
         renderFilteredData();
-        footerActions.removeChild(button);
+        console.log(button);
+        if(button){
+          footerActions.removeChild(button);
+        }
       });
     }
   } else {
+    console.log(btnClearCompleted[0]);
     footerActions.removeChild(btnClearCompleted[0]);
   }
 }
@@ -73,7 +78,16 @@ function showCountTasks() {
   const todoTasks = todoList.filter((item) => item.done === false);
   countTasks.innerHTML = "<strong>" + todoTasks.length + "</strong> items left";
 }
-
+function hideBtnToggleAll() {
+  if(todoList.length === 0) {
+    labelToggleAll.style.display = "none";
+    console.log(btnToggleAll.checked);
+    if (btnToggleAll.checked){
+      btnToggleAll.checked = false;
+    }
+    
+  }
+}
 function render() {
   listString = localStorage.getItem(storageKey);
   if (listString) {
@@ -82,8 +96,8 @@ function render() {
     listData.innerHTML = content.join("");
   }
   showFooter();
+  hideBtnToggleAll();
 }
-
 // add new task
 todoInput.onkeypress = (e) => {
   if (e.charCode === enterKey && todoInput.value.trim() !== "") {
@@ -96,6 +110,7 @@ todoInput.onkeypress = (e) => {
     todoInput.value = "";
 
     saveData(todoList);
+    labelToggleAll.style.display = "block";
   }
   renderFilteredData();
 };
@@ -176,6 +191,7 @@ function renderFilteredData() {
   const content = convertToHTML(list);
   listData.innerHTML = content.join("");
   showFooter();
+  hideBtnToggleAll();
 }
 
 filters.addEventListener("click", (event) => {
@@ -199,13 +215,24 @@ listData.addEventListener("dblclick", (event) => {
     inputEdit.selectionEnd = inputEdit.value.length;
     console.log(inputEdit.value.length);
     inputEdit.focus();
-    
+
+    const taskId = taskElement.getAttribute("id");
+
     inputEdit.onblur = () => {
+      todoList.forEach((item) => {
+        if (item.id == taskId) {
+          item.content = inputEdit.value;
+        }
+        return item;
+      });
+
+      saveData(todoList);
       taskElement.classList.remove("editing");
-    };
+      renderFilteredData();
+    }
+    
     inputEdit.onkeypress = (e) => {
       if (e.charCode === enterKey && inputEdit.value.trim() !== "") {
-        const taskId = taskElement.getAttribute("id");
         todoList.forEach((item) => {
           if (item.id == taskId) {
             item.content = inputEdit.value;
@@ -221,4 +248,16 @@ listData.addEventListener("dblclick", (event) => {
   }
 });
 
+function editTask (taskId){
+  todoList.forEach((item) => {
+    if (item.id == taskId) {
+      item.content = inputEdit.value;
+    }
+    return item;
+  });
+
+  saveData(todoList);
+  taskElement.classList.remove("editing");
+  renderFilteredData();
+}
 render();
