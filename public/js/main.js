@@ -78,14 +78,22 @@ function showCountTasks() {
   const todoTasks = todoList.filter((item) => item.done === false);
   countTasks.innerHTML = "<strong>" + todoTasks.length + "</strong> items left";
 }
-function hideBtnToggleAll() {
+function modifyBtnToggleAll() {
   if(todoList.length === 0) {
     labelToggleAll.style.display = "none";
     console.log(btnToggleAll.checked);
     if (btnToggleAll.checked){
       btnToggleAll.checked = false;
     }
-    
+  }
+  let isAllCompleted = true;
+  for(let i = 0; i < todoList.length; i++) {
+    if (todoList[i].done === false) isAllCompleted = false;
+  }
+  if (isAllCompleted === true){
+    btnToggleAll.checked = true;
+  } else {
+    btnToggleAll.checked = false;
   }
 }
 function render() {
@@ -96,7 +104,7 @@ function render() {
     listData.innerHTML = content.join("");
   }
   showFooter();
-  hideBtnToggleAll();
+  modifyBtnToggleAll();
 }
 // add new task
 todoInput.onkeypress = (e) => {
@@ -111,6 +119,7 @@ todoInput.onkeypress = (e) => {
 
     saveData(todoList);
     labelToggleAll.style.display = "block";
+    btnToggleAll.checked = false;
   }
   renderFilteredData();
 };
@@ -191,7 +200,7 @@ function renderFilteredData() {
   const content = convertToHTML(list);
   listData.innerHTML = content.join("");
   showFooter();
-  hideBtnToggleAll();
+  modifyBtnToggleAll();
 }
 
 filters.addEventListener("click", (event) => {
